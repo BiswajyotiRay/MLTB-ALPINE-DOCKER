@@ -3,8 +3,8 @@ FROM alpine:edge
 
 # LABEL
 
-LABEL org.opencontainers.image.source="https://github.com/amirulandalib/mltb-alpine"
-LABEL org.opencontainers.image.description="Docker for MLTB by Anasty based on Alpine EDGE docker image"
+LABEL org.opencontainers.image.source="https://github.com/BiswajyotiRay/mltb-alpine"
+LABEL org.opencontainers.image.description="Docker for MLTB based on Alpine EDGE docker image"
 
 
 ARG TARGETPLATFORM BUILDPLATFORM
@@ -16,7 +16,7 @@ RUN chmod -R 777 /usr/src/app && \
     chmod -R +x /usr/src/app && \
     chmod -R 705 /usr/src/app
 
-ENV TZ Asia/Dhaka
+ENV TZ Asia/Kolkata
 
 
 # Installing basic packages
@@ -62,24 +62,13 @@ RUN echo -e "\e[32m[INFO]: Installing Cloudflared Tunnel.\e[0m" && \
     wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}.deb -O cloudflared-linux-${ARCH}.deb && \
     sudo dpkg -i --force-architecture cloudflared-linux-${ARCH}.deb
 
-
-# Building and Installing MegaSdkC++
-
 ENV PYTHONWARNINGS=ignore
-RUN echo -e "\e[32m[INFO]: Building and Installing MegaSdkC++.\e[0m" && \
-    git clone https://github.com/meganz/sdk.git ~/home/sdk && \
-    cd ~/home/sdk && rm -rf .git && \
-    autoupdate -fIv && ./autogen.sh && \
-    ./configure CFLAGS='-fpermissive' CXXFLAGS='-fpermissive' CPPFLAGS='-fpermissive' CCFLAGS='-fpermissive' \
-    --disable-silent-rules --enable-python --with-sodium --disable-examples --with-python3 && \
-    make -j$(nproc --all) && \
-    cd bindings/python/ && \
-    python3 setup.py bdist_wheel && \
-    cd dist && ls && \
-    pip3 install *.whl
+# install megasdkrest
+RUN curl -L https://github.com/BiswajyotiRay/megasdkrest/releases/download/v0.1.2/megasdkrest-amd64 \
+-o home/bin/megasdkrest && chmod +x home/bin/megasdkrest
 
 RUN echo -e "\e[32m[INFO]: Caching Pip Requirements.\e[0m" && \  
-    wget https://raw.githubusercontent.com/anasty17/mirror-leech-telegram-bot/master/requirements.txt -O requirements.txt && \
+    wget https://raw.githubusercontent.com/BiswajyotiRay/MlX-Docker/main/requirements.txt -O requirements.txt && \
     pip3 install -U -r requirements.txt
 
 # Running Final Apk Update
@@ -92,7 +81,7 @@ RUN echo -e "\e[32m[INFO]: Running Final Apk Update.\e[0m" && \
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:en" LC_ALL="en_US.UTF-8"
 RUN echo 'export LC_ALL=en_US.UTF-8' >> /etc/profile.d/locale.sh && \
     sed -i 's|LANG=C.UTF-8|LANG=en_US.UTF-8|' /etc/profile.d/locale.sh && \
-    cp /usr/share/zoneinfo/Asia/Dhaka /etc/localtime && \
+    cp /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && \
     rm -rf *
 
 
