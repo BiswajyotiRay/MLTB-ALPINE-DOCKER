@@ -26,7 +26,7 @@ on:
 
 env:
 
-  IMAGE: ghcr.io/amirulandalib/mltb-alpine-docker
+  IMAGE: ghcr.io/BiswajyotiRay/mltb-alpine
 
 jobs:
 
@@ -76,4 +76,4 @@ jobs:
 
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
-          tags: ghcr.io/amirulandalib/mltb-alpine-docker:latest
+          tags: ghcr.io/BiswajyotiRay/mltb-alpine:latest
